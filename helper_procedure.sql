@@ -31,11 +31,23 @@ DELIMITER $$
 DROP PROCEDURE IF EXISTS loginUser$$
 CREATE PROCEDURE loginUser(IN username VARCHAR(255), IN password VARCHAR(255))
 BEGIN
-  SELECT * FROM useraccount WHERE (username = username OR username = email) AND password = password;
+  SELECT * FROM useraccount AS UA WHERE (UA.username = username OR UA.email = username) AND UA.password_hash = password;
 END $$
+DELIMITER ;
+
+DELIMITER $$
 DROP PROCEDURE IF EXISTS registerUser$$
 CREATE PROCEDURE registerUser(IN username VARCHAR(255), IN password VARCHAR(255), IN email VARCHAR(255))
 BEGIN
   INSERT INTO useraccount (username, password, email) VALUES (username, password, email);
 END $$
 DELIMITER ;
+
+DELIMITER $$
+DROP PROCEDURE IF EXISTS insertUserSessionHistory$$
+CREATE PROCEDURE insertUserSessionHistory(IN user_id INT, IN session_id VARCHAR(255))
+BEGIN
+  INSERT INTO user_sessions (user_id, session_id) VALUES (user_id, session_id);
+END $$
+DELIMITER ;
+

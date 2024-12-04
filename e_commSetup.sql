@@ -2,7 +2,6 @@
 CREATE DATABASE IF NOT EXISTS ecom_db;
 USE ecom_db;
 
--- Create UserAccorderitemsorderitemsount table
 CREATE TABLE IF NOT EXISTS UserAccount (
     user_id INT AUTO_INCREMENT PRIMARY KEY, -- Unique identifier for users
     username VARCHAR(50) NOT NULL UNIQUE,  -- Unique username
@@ -16,7 +15,6 @@ CREATE TABLE IF NOT EXISTS UserAccount (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP -- Account creation timestamp
 );
 
--- Create Product table
 CREATE TABLE IF NOT EXISTS Product (
     product_id INT AUTO_INCREMENT PRIMARY KEY, -- Unique identifier for products
     name VARCHAR(100) NOT NULL,               -- Product name
@@ -27,7 +25,6 @@ CREATE TABLE IF NOT EXISTS Product (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP -- Timestamp
 );
 
--- Create Order table
 CREATE TABLE IF NOT EXISTS OrderTable (
     order_id INT AUTO_INCREMENT PRIMARY KEY,  -- Unique identifier for orders
     user_id INT NOT NULL,                     -- User who placed the order
@@ -37,7 +34,6 @@ CREATE TABLE IF NOT EXISTS OrderTable (
     FOREIGN KEY (user_id) REFERENCES UserAccount(user_id) -- Link to UserAccount
 );
 
--- Create OrderItems table
 CREATE TABLE IF NOT EXISTS OrderItems (
     order_item_id INT AUTO_INCREMENT PRIMARY KEY, -- Unique identifier for order items
     order_id INT NOT NULL,                        -- Associated order
@@ -47,3 +43,21 @@ CREATE TABLE IF NOT EXISTS OrderItems (
     FOREIGN KEY (order_id) REFERENCES OrderTable(order_id), -- Link to OrderTable
     FOREIGN KEY (product_id) REFERENCES Product(product_id) -- Link to Product
 );
+
+CREATE TABLE sessions (
+    session_id VARCHAR(255) NOT NULL PRIMARY KEY, 
+    expires BIGINT NOT NULL, 
+    data TEXT      
+);
+
+CREATE TABLE user_sessions (
+    user_id INT NOT NULL,
+    session_id VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (user_id, session_id), -- Composite primary key
+    FOREIGN KEY (user_id) REFERENCES useraccount(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (session_id) REFERENCES sessions(session_id) ON DELETE CASCADE
+);
+
+
+
