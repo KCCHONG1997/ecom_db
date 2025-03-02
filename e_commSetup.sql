@@ -20,9 +20,7 @@ CREATE TABLE IF NOT EXISTS LearnerProfile (
     profile_image_url VARCHAR(255),
     occupation VARCHAR(100),
     company_name VARCHAR(255),
-    about_myself TEXT,            
-    recently_learned TEXT,        
-    
+    about_myself TEXT,                
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES UserAccount(user_id)
 );
@@ -41,16 +39,6 @@ CREATE TABLE IF NOT EXISTS LearnerAchievement (
     FOREIGN KEY (learner_id) REFERENCES LearnerProfile(learner_id)
 );
 
-CREATE TABLE IF NOT EXISTS Product (
-    product_id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    description TEXT,
-    price DECIMAL(10, 2) NOT NULL,
-    stock INT DEFAULT 0,
-    category VARCHAR(50),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
 CREATE TABLE IF NOT EXISTS OrderTable (
     order_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
@@ -63,11 +51,9 @@ CREATE TABLE IF NOT EXISTS OrderTable (
 CREATE TABLE IF NOT EXISTS OrderCourse (
     order_course_id INT AUTO_INCREMENT PRIMARY KEY,
     order_id INT NOT NULL,
-    product_id INT NOT NULL,
     quantity INT NOT NULL,
     price DECIMAL(10, 2) NOT NULL,
-    FOREIGN KEY (order_id) REFERENCES OrderTable(order_id),
-    FOREIGN KEY (product_id) REFERENCES Product(product_id)
+    FOREIGN KEY (order_id) REFERENCES OrderTable(order_id)
 );
 
 CREATE TABLE IF NOT EXISTS sessions (
