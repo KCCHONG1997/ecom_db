@@ -13,17 +13,6 @@ CREATE TABLE IF NOT EXISTS UserAccount (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS ProviderProfile (
-    provider_id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL,
-    organization_name VARCHAR(255),
-    website VARCHAR(255),
-    phone_number VARCHAR(15),
-    address TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES UserAccount(user_id)
-);
-
 CREATE TABLE IF NOT EXISTS LearnerProfile (
     learner_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
@@ -173,6 +162,18 @@ CREATE TABLE IF NOT EXISTS LectureTeamMember (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (lecture_team_id) REFERENCES LectureTeam(lecture_team_id),
     FOREIGN KEY (provider_id) REFERENCES UserAccount(user_id)
+);
+
+CREATE TABLE IF NOT EXISTS ProviderProfile (
+    provider_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    lecture_team_id INT , 
+    organization_name VARCHAR(255), 
+    phone_number VARCHAR(15),
+    address TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES UserAccount(user_id),
+    FOREIGN KEY (lecture_team_id) REFERENCES LectureTeam(lecture_team_id)
 );
 
 CREATE TABLE IF NOT EXISTS CourseModule (
