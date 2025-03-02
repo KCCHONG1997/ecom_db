@@ -39,23 +39,6 @@ CREATE TABLE IF NOT EXISTS LearnerAchievement (
     FOREIGN KEY (learner_id) REFERENCES LearnerProfile(learner_id)
 );
 
-CREATE TABLE IF NOT EXISTS OrderTable (
-    order_id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL,
-    total_amount DECIMAL(10, 2) NOT NULL,
-    status ENUM('pending','shipped','delivered','canceled') DEFAULT 'pending',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES UserAccount(user_id)
-);
-
-CREATE TABLE IF NOT EXISTS OrderCourse (
-    order_course_id INT AUTO_INCREMENT PRIMARY KEY,
-    order_id INT NOT NULL,
-    quantity INT NOT NULL,
-    price DECIMAL(10, 2) NOT NULL,
-    FOREIGN KEY (order_id) REFERENCES OrderTable(order_id)
-);
-
 CREATE TABLE IF NOT EXISTS sessions (
     session_id VARCHAR(255) NOT NULL PRIMARY KEY,
     expires BIGINT NOT NULL,
@@ -81,14 +64,23 @@ CREATE TABLE IF NOT EXISTS Course (
     category VARCHAR(50),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     source ENUM('internal','myskillsfuture') DEFAULT 'internal',
-    
-    -- External-related fields:
     external_reference_number VARCHAR(100),
     training_provider_alias VARCHAR(255),
     total_training_hours DECIMAL(5,1),
     total_cost DECIMAL(10,2),
     tile_image_url VARCHAR(255),
     FOREIGN KEY (creator_id) REFERENCES UserAccount(user_id)
+);
+
+CREATE TABLE IF NOT EXISTS OrderCourse (
+	order_course_id INT AUTO_INCREMENT PRIMARY KEY,
+    learner_id INT NOT NULL,
+    course_id INT NOT NULL,
+    orderDateTime DATETIME DEFAULT CURRENT_TIMESTAMP,
+    status ENUM('pending', 'paid') DEFAULT 'pending',
+    
+    FOREIGN KEY (learner_id) REFERENCES UserAccount(user_id),
+    FOREIGN KEY (course_id) REFERENCES Course(course_id)
 );
 
 CREATE TABLE IF NOT EXISTS CourseEnrollment (
