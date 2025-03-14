@@ -1,4 +1,3 @@
-
 CREATE DATABASE IF NOT EXISTS ecom_db;
 USE ecom_db;
 
@@ -10,7 +9,7 @@ CREATE TABLE IF NOT EXISTS UserAccount (
     first_name VARCHAR(50),                  
     last_name VARCHAR(50),
     phone_number VARCHAR(15) NULL, 
-    role ENUM('producer','learner','admin') DEFAULT 'learner',
+    role ENUM('provider','learner','admin') DEFAULT 'learner',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -23,11 +22,9 @@ CREATE TABLE IF NOT EXISTS LearnerProfile (
     company_name VARCHAR(255),
     about_myself TEXT,                
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES UserAccount(user_id)
+    FOREIGN KEY (user_id) REFERENCES UserAccount(user_id) ON DELETE CASCADE
 );
 
---     LICENSES, CERTIFICATES, AND BADGES (all stored as “achievements”)
---     A learner can have multiple achievements, so 1 learner -> many achievements
 CREATE TABLE IF NOT EXISTS LearnerAchievement (
     achievement_id INT AUTO_INCREMENT PRIMARY KEY,
     learner_id INT NOT NULL,
@@ -37,7 +34,7 @@ CREATE TABLE IF NOT EXISTS LearnerAchievement (
     date_issued DATE,             
     description TEXT,             
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (learner_id) REFERENCES LearnerProfile(learner_id)
+    FOREIGN KEY (learner_id) REFERENCES LearnerProfile(learner_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS sessions (
@@ -57,10 +54,10 @@ CREATE TABLE IF NOT EXISTS user_sessions (
 
 CREATE TABLE IF NOT EXISTS Course (
     course_id INT AUTO_INCREMENT PRIMARY KEY,
-    creator_id INT NOT NULL, -- The producer who owns/created the course
+    creator_id INT NOT NULL, 
     name VARCHAR(100) NOT NULL,
     description TEXT,
-    price DECIMAL(10, 2) NOT NULL, -- If courses can be paid
+    price DECIMAL(10, 2) NOT NULL,
     max_capacity INT DEFAULT 0,
     category VARCHAR(50),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -70,7 +67,7 @@ CREATE TABLE IF NOT EXISTS Course (
     total_training_hours DECIMAL(5,1),
     total_cost DECIMAL(10,2),
     tile_image_url VARCHAR(255),
-    FOREIGN KEY (creator_id) REFERENCES UserAccount(user_id)
+    FOREIGN KEY (creator_id) REFERENCES UserAccount(user_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS OrderCourse (
@@ -79,9 +76,8 @@ CREATE TABLE IF NOT EXISTS OrderCourse (
     course_id INT NOT NULL,
     orderDateTime DATETIME DEFAULT CURRENT_TIMESTAMP,
     status ENUM('pending', 'paid') DEFAULT 'pending',
-    
-    FOREIGN KEY (learner_id) REFERENCES UserAccount(user_id),
-    FOREIGN KEY (course_id) REFERENCES Course(course_id)
+    FOREIGN KEY (learner_id) REFERENCES UserAccount(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (course_id) REFERENCES Course(course_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS CourseEnrollment (
@@ -91,27 +87,27 @@ CREATE TABLE IF NOT EXISTS CourseEnrollment (
     completion_percentage DECIMAL(5,2) DEFAULT 0.00,
     is_kicked BOOLEAN DEFAULT 0,
     enrolled_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES UserAccount(user_id),
-    FOREIGN KEY (course_id) REFERENCES Course(course_id)
+    FOREIGN KEY (user_id) REFERENCES UserAccount(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (course_id) REFERENCES Course(course_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS CourseAttendance (
     attendance_id INT AUTO_INCREMENT PRIMARY KEY,
     enrollment_id INT NOT NULL,
-    date_attended DATE NOT NULL, -- Or DATETIME if needed
+    date_attended DATE NOT NULL,
     status ENUM('present','absent','late') DEFAULT 'present',
-    FOREIGN KEY (enrollment_id) REFERENCES CourseEnrollment(enrollment_id)
+    FOREIGN KEY (enrollment_id) REFERENCES CourseEnrollment(enrollment_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS CourseReview (
     review_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     course_id INT NOT NULL,
-    rating TINYINT NOT NULL, -- e.g., 1 to 5
+    rating TINYINT NOT NULL,
     comment TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES UserAccount(user_id),
-    FOREIGN KEY (course_id) REFERENCES Course(course_id)
+    FOREIGN KEY (user_id) REFERENCES UserAccount(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (course_id) REFERENCES Course(course_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS ContactUsFeedback (
@@ -130,7 +126,7 @@ CREATE TABLE IF NOT EXISTS LectureTeam (
     course_id INT NOT NULL,
     team_name VARCHAR(100),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (course_id) REFERENCES Course(course_id)
+    FOREIGN KEY (course_id) REFERENCES Course(course_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS LectureTeamMember (
@@ -139,20 +135,20 @@ CREATE TABLE IF NOT EXISTS LectureTeamMember (
     provider_id INT NOT NULL, -- Link to the provider user
     role VARCHAR(50),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (lecture_team_id) REFERENCES LectureTeam(lecture_team_id),
-    FOREIGN KEY (provider_id) REFERENCES UserAccount(user_id)
+    FOREIGN KEY (lecture_team_id) REFERENCES LectureTeam(lecture_team_id) ON DELETE CASCADE,
+    FOREIGN KEY (provider_id) REFERENCES UserAccount(user_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS ProviderProfile (
     provider_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
-    lecture_team_id INT , 
+    lecture_team_id INT, 
     organization_name VARCHAR(255), 
     phone_number VARCHAR(15),
     address TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES UserAccount(user_id),
-    FOREIGN KEY (lecture_team_id) REFERENCES LectureTeam(lecture_team_id)
+    FOREIGN KEY (user_id) REFERENCES UserAccount(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (lecture_team_id) REFERENCES LectureTeam(lecture_team_id) ON DELETE SET NULL
 );
 
 CREATE TABLE IF NOT EXISTS CourseModule (
@@ -160,9 +156,9 @@ CREATE TABLE IF NOT EXISTS CourseModule (
     course_id INT NOT NULL,
     module_name VARCHAR(255) NOT NULL,
     module_description TEXT,
-    module_order INT DEFAULT 1,     -- If you want a sequence
+    module_order INT DEFAULT 1,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (course_id) REFERENCES Course(course_id)
+    FOREIGN KEY (course_id) REFERENCES Course(course_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS ModuleProgress (
@@ -172,6 +168,6 @@ CREATE TABLE IF NOT EXISTS ModuleProgress (
     progress DECIMAL(5,2) DEFAULT 0.0,
     status ENUM('not_started','in_progress','completed') DEFAULT 'not_started',
     last_access TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (enrollment_id) REFERENCES CourseEnrollment(enrollment_id),
-    FOREIGN KEY (module_id) REFERENCES CourseModule(module_id)
+    FOREIGN KEY (enrollment_id) REFERENCES CourseEnrollment(enrollment_id) ON DELETE CASCADE,
+    FOREIGN KEY (module_id) REFERENCES CourseModule(module_id) ON DELETE CASCADE
 );
