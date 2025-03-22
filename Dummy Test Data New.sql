@@ -6,11 +6,11 @@
 INSERT INTO UserAccount (username, email, password_hash, first_name, last_name, role) VALUES
 ('learner1', 'learner1@example.com', 'hash1', 'Alice', 'Smith', 'learner'),
 ('learner2', 'learner2@example.com', 'hash2', 'Bob', 'Jones', 'learner'),
-('producer1', 'producer1@example.com', 'hash3', 'Carol', 'White', 'producer'),
+('provider1', 'provider1@example.com', 'hash3', 'Carol', 'White', 'provider'),
 ('admin1', 'admin1@example.com', 'hash4', 'David', 'Brown', 'admin'),
 ('learner3', 'learner3@example.com', 'hash5', 'Eve', 'Black', 'learner'),
 ('learner4', 'learner4@example.com', 'hash6', 'Frank', 'Green', 'learner'),
-('provider1', 'provider1@example.com', 'hash7', 'Grace', 'Gray', 'producer'),
+('provider1', 'provider1@example.com', 'hash7', 'Grace', 'Gray', 'provider'),
 ('learner5', 'learner5@example.com', 'hash8', 'Hank', 'Blue', 'learner');
 
 -- 2. LearnerProfile (5 rows for learners: user_id 1,2,5,6,8)
@@ -45,7 +45,7 @@ INSERT INTO user_sessions (user_id, session_id) VALUES
 (4, 'sess4'),
 (5, 'sess5');
 
--- 6. Course (5 rows; creator_id should be a producer or admin, using user_id 3 and 4)
+-- 6. Course (5 rows; creator_id should be a provider or admin, using user_id 3 and 4)
 INSERT INTO Course (creator_id, name, description, price, max_capacity, category, source, external_reference_number, training_provider_alias, total_training_hours, total_cost, tile_image_url) VALUES
 (3, 'Course 1', 'Introduction to Course 1', 100.00, 30, 'Category A', 'internal', 'REF001', 'Provider A', 10.0, 500.00, 'http://example.com/course1.jpg'),
 (3, 'Course 2', 'Introduction to Course 2', 150.00, 25, 'Category B', 'internal', 'REF002', 'Provider B', 12.0, 600.00, 'http://example.com/course2.jpg'),

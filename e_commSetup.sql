@@ -102,7 +102,7 @@ CREATE TABLE IF NOT EXISTS CourseAttendance (
 CREATE TABLE IF NOT EXISTS CourseReview (
     review_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
-    course_id INT NOT NULL,
+    course_id INT NULL,
     externalReferenceNumber VARCHAR(255) NULL,
     rating TINYINT NOT NULL,
     comment TEXT,
