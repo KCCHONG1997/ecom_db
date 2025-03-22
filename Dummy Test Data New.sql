@@ -10,7 +10,7 @@ INSERT INTO UserAccount (username, email, password_hash, first_name, last_name, 
 ('admin1', 'admin1@example.com', 'hash4', 'David', 'Brown', 'admin'),
 ('learner3', 'learner3@example.com', 'hash5', 'Eve', 'Black', 'learner'),
 ('learner4', 'learner4@example.com', 'hash6', 'Frank', 'Green', 'learner'),
-('provider1', 'provider1@example.com', 'hash7', 'Grace', 'Gray', 'provider'),
+('provider12', 'provider12@example.com', 'hash7', 'Grace', 'Gray', 'provider'),
 ('learner5', 'learner5@example.com', 'hash8', 'Hank', 'Blue', 'learner');
 
 -- 2. LearnerProfile (5 rows for learners: user_id 1,2,5,6,8)
