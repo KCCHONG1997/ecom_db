@@ -1,5 +1,20 @@
+DROP SCHEMA IF EXISTS ecom_db;
 CREATE DATABASE IF NOT EXISTS ecom_db;
 USE ecom_db;
+
+DROP TABLE IF EXISTS ModuleProgress;
+DROP TABLE IF EXISTS CourseModule;
+DROP TABLE IF EXISTS ProviderProfile;
+DROP TABLE IF EXISTS ContactUsFeedback;
+DROP TABLE IF EXISTS CourseReview;
+DROP TABLE IF EXISTS CourseAttendance;
+DROP TABLE IF EXISTS CourseEnrollment;
+DROP TABLE IF EXISTS Course;
+DROP TABLE IF EXISTS user_sessions;
+DROP TABLE IF EXISTS sessions;
+DROP TABLE IF EXISTS LearnerAchievement;
+DROP TABLE IF EXISTS LearnerProfile;
+DROP TABLE IF EXISTS UserAccount;
 
 CREATE TABLE IF NOT EXISTS UserAccount (
     user_id INT AUTO_INCREMENT PRIMARY KEY,  
@@ -70,20 +85,10 @@ CREATE TABLE IF NOT EXISTS Course (
     FOREIGN KEY (creator_id) REFERENCES UserAccount(user_id) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS OrderCourse (
-	order_course_id INT AUTO_INCREMENT PRIMARY KEY,
-    learner_id INT NOT NULL,
-    course_id INT NOT NULL,
-    orderDateTime DATETIME DEFAULT CURRENT_TIMESTAMP,
-    status ENUM('pending', 'paid') DEFAULT 'pending',
-    FOREIGN KEY (learner_id) REFERENCES UserAccount(user_id) ON DELETE CASCADE,
-    FOREIGN KEY (course_id) REFERENCES Course(course_id) ON DELETE CASCADE
-);
-
 CREATE TABLE IF NOT EXISTS CourseEnrollment (
     enrollment_id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL,   -- The learner's user_id
-    course_id INT NOT NULL, -- The specific course
+    user_id INT NOT NULL,
+    course_id INT NOT NULL,
     completion_percentage DECIMAL(5,2) DEFAULT 0.00,
     is_kicked BOOLEAN DEFAULT 0,
     enrolled_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -107,13 +112,12 @@ CREATE TABLE IF NOT EXISTS CourseReview (
     rating TINYINT NOT NULL,
     comment TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES UserAccount(user_id) ON DELETE CASCADE,
-    FOREIGN KEY (course_id) REFERENCES Course(course_id) ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES UserAccount(user_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS ContactUsFeedback (
     feedback_id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NULL, -- If a user is logged in when sending feedback
+    user_id INT NULL,
     name VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL,
     subject VARCHAR(255) NOT NULL,
@@ -122,34 +126,14 @@ CREATE TABLE IF NOT EXISTS ContactUsFeedback (
     FOREIGN KEY (user_id) REFERENCES UserAccount(user_id) ON DELETE SET NULL
 );
 
-CREATE TABLE IF NOT EXISTS LectureTeam (
-    lecture_team_id INT AUTO_INCREMENT PRIMARY KEY,
-    course_id INT NOT NULL,
-    team_name VARCHAR(100),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (course_id) REFERENCES Course(course_id) ON DELETE CASCADE
-);
-
-CREATE TABLE IF NOT EXISTS LectureTeamMember (
-    lecture_team_member_id INT AUTO_INCREMENT PRIMARY KEY,
-    lecture_team_id INT NOT NULL,
-    provider_id INT NOT NULL, -- Link to the provider user
-    role VARCHAR(50),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (lecture_team_id) REFERENCES LectureTeam(lecture_team_id) ON DELETE CASCADE,
-    FOREIGN KEY (provider_id) REFERENCES UserAccount(user_id) ON DELETE CASCADE
-);
-
 CREATE TABLE IF NOT EXISTS ProviderProfile (
     provider_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
-    lecture_team_id INT, 
     organization_name VARCHAR(255), 
     phone_number VARCHAR(15),
     address TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES UserAccount(user_id) ON DELETE CASCADE,
-    FOREIGN KEY (lecture_team_id) REFERENCES LectureTeam(lecture_team_id) ON DELETE SET NULL
+    FOREIGN KEY (user_id) REFERENCES UserAccount(user_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS CourseModule (
