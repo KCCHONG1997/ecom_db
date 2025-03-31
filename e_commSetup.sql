@@ -7,12 +7,10 @@ DROP TABLE IF EXISTS CourseModule;
 DROP TABLE IF EXISTS ProviderProfile;
 DROP TABLE IF EXISTS ContactUsFeedback;
 DROP TABLE IF EXISTS CourseReview;
-DROP TABLE IF EXISTS CourseAttendance;
 DROP TABLE IF EXISTS CourseEnrollment;
 DROP TABLE IF EXISTS Course;
 DROP TABLE IF EXISTS user_sessions;
 DROP TABLE IF EXISTS sessions;
-DROP TABLE IF EXISTS LearnerAchievement;
 DROP TABLE IF EXISTS LearnerProfile;
 DROP TABLE IF EXISTS UserAccount;
 
@@ -40,17 +38,17 @@ CREATE TABLE IF NOT EXISTS LearnerProfile (
     FOREIGN KEY (user_id) REFERENCES UserAccount(user_id) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS LearnerAchievement (
-    achievement_id INT AUTO_INCREMENT PRIMARY KEY,
-    learner_id INT NOT NULL,
-    achievement_type ENUM('badge','license','certificate') NOT NULL,
-    name VARCHAR(255) NOT NULL,   
-    issuer VARCHAR(255),          
-    date_issued DATE,             
-    description TEXT,             
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (learner_id) REFERENCES LearnerProfile(learner_id) ON DELETE CASCADE
-);
+-- CREATE TABLE IF NOT EXISTS LearnerAchievement (
+--     achievement_id INT AUTO_INCREMENT PRIMARY KEY,
+--     learner_id INT NOT NULL,
+--     achievement_type ENUM('badge','license','certificate') NOT NULL,
+--     name VARCHAR(255) NOT NULL,   
+--     issuer VARCHAR(255),          
+--     date_issued DATE,             
+--     description TEXT,             
+--     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+--     FOREIGN KEY (learner_id) REFERENCES LearnerProfile(learner_id) ON DELETE CASCADE
+-- );
 
 CREATE TABLE IF NOT EXISTS sessions (
     session_id VARCHAR(255) NOT NULL PRIMARY KEY,
@@ -94,14 +92,6 @@ CREATE TABLE IF NOT EXISTS CourseEnrollment (
     enrolled_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES UserAccount(user_id) ON DELETE CASCADE,
     FOREIGN KEY (course_id) REFERENCES Course(course_id) ON DELETE CASCADE
-);
-
-CREATE TABLE IF NOT EXISTS CourseAttendance (
-    attendance_id INT AUTO_INCREMENT PRIMARY KEY,
-    enrollment_id INT NOT NULL,
-    date_attended DATE NOT NULL,
-    status ENUM('present','absent','late') DEFAULT 'present',
-    FOREIGN KEY (enrollment_id) REFERENCES CourseEnrollment(enrollment_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS CourseReview (
@@ -156,3 +146,10 @@ CREATE TABLE IF NOT EXISTS ModuleProgress (
     FOREIGN KEY (enrollment_id) REFERENCES CourseEnrollment(enrollment_id) ON DELETE CASCADE,
     FOREIGN KEY (module_id) REFERENCES CourseModule(module_id) ON DELETE CASCADE
 );
+
+-- dummy admin
+INSERT INTO UserAccount (username, email, password_hash, first_name, last_name, role)
+VALUES ('admin', 'admin@example.com', '$2a$10$lFW429HwMaNhMF/VmYkns.C6PWY00feGT84Y08p5MMdDxvvkq.V/q', 'Admin', 'User', 'admin');
+-- password: admin123
+
+
